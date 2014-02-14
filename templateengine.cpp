@@ -8,6 +8,7 @@
 #include <boost/bind.hpp>
 
 #include "templateengine.h"
+#include "buildinhelpers.h"
 
 namespace cpptl {
 
@@ -21,6 +22,8 @@ public:
 TemplateEngine::TemplateEngine()
 {
     pimpl.reset(new TemplateEngineImpl);
+
+    registerHelper("include", boost::bind(include, boost::ref(*this), _1, _2));
 }
 
 TemplateEngine::~TemplateEngine()
