@@ -11,6 +11,7 @@
 namespace cpptl {
 
 Value include(TemplateEngine &engine, const Value &context, const Value &fileName);
+Value rawHtml(const Value &context, const Value &html);
 
 } // namespace cpptl
 

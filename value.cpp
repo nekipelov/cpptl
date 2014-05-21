@@ -80,6 +80,7 @@ Value::Holder::~Holder()
 {
     switch(type)
     {
+    case UnsafeString:
     case String:
         delete data.string;
         break;
@@ -162,8 +163,22 @@ Value::Value(const char *s)
 
 Value::Value(const std::string &s)
 {
-        holder.reset( new Holder );
+    holder.reset( new Holder );
     holder->type = String;
+    holder->data.string = new std::string(s);
+}
+
+Value::Value(const char *s, const UnsafeStringTag &)
+{
+    holder.reset( new Holder );
+    holder->type = UnsafeString;
+    holder->data.string = new std::string(s);
+}
+
+Value::Value(const std::string &s, const UnsafeStringTag &)
+{
+    holder.reset( new Holder );
+    holder->type = UnsafeString;
     holder->data.string = new std::string(s);
 }
 
@@ -364,6 +379,7 @@ int64_t Value::safeCastToNumber(const Value &value)
     case Value::Double:
         return holder->data.d;
     case Value::String:
+    case Value::UnsafeString:
 #ifdef _MSC_VER
         return _strtoi64(holder->data.string->c_str(), 0, 10);
 #else
@@ -390,6 +406,7 @@ bool Value::convertHelper(const Value &v, Value::Type type, void *ptr)
             *b = safeCastToNumber(v) != 0;
             return true;
         case String:
+        case UnsafeString:
             *b = stringToBool(v);
             return true;
         default:
@@ -405,6 +422,7 @@ bool Value::convertHelper(const Value &v, Value::Type type, void *ptr)
             *d = safeCastToNumber(v);
             return true;
         case String:
+        case UnsafeString:
             *d = stringToDouble(v);
             return true;
         default:
@@ -415,6 +433,7 @@ bool Value::convertHelper(const Value &v, Value::Type type, void *ptr)
     case Int:
         *reinterpret_cast<int *>( ptr ) = safeCastToNumber(v);
         return true;
+    case UnsafeString:
     case String: {
         std::string *s = reinterpret_cast<std::string *>( ptr );
         std::stringstream ss;
@@ -434,7 +453,8 @@ bool Value::convertHelper(const Value &v, Value::Type type, void *ptr)
             *s = ss.str();
             return true;
         case String:
-            *s = v.toString();
+        case UnsafeString:
+            *s = *v.holder->data.string;
             return true;
         default:
             return false;
@@ -609,7 +629,8 @@ void Value::dump(int level) const
 
 Value operator + (const Value &lhs, const Value &rhs)
 {
-    if( lhs.type() == Value::String && rhs.type() == Value::String )
+    if( (lhs.type() == Value::String || lhs.type() == Value::UnsafeString)
+            && (rhs.type() == Value::String || rhs.type() == Value::UnsafeString) )
     {
         return lhs.toString() + rhs.toString();
     }
@@ -711,7 +732,8 @@ Value operator - (const Value &lhs, const Value &rhs)
 
 Value operator * (const Value &lhs, const Value &rhs)
 {
-    if( lhs.type() == Value::String && rhs.type() == Value::Int )
+    if( (lhs.type() == Value::String || lhs.type() == Value::UnsafeString)
+            && rhs.type() == Value::Int )
     {
         const std::string *source = lhs.holder->data.string;
         std::string result;
@@ -839,7 +861,8 @@ bool operator == (const Value &lhs, const Value &rhs)
         else
             return false;
     case Value::String:
-        if(rhs.type() == Value::String)
+    case Value::UnsafeString:
+        if(rhs.type() == Value::String || rhs.type() == Value::UnsafeString)
             return lhs.toString() == rhs.toString();
         else
             return false;
@@ -903,7 +926,8 @@ bool operator > (const Value &lhs, const Value &rhs)
         else
             return false;
     case Value::String:
-        if(rhs.type() == Value::String)
+    case Value::UnsafeString:
+        if(rhs.type() == Value::String || rhs.type() == Value::UnsafeString)
             return lhs.toString() > rhs.toString();
         else
             return false;
@@ -956,7 +980,8 @@ bool operator < (const Value &lhs, const Value &rhs)
         else
             return false;
     case Value::String:
-        if(rhs.type() == Value::String)
+    case Value::UnsafeString:
+        if(rhs.type() == Value::String || rhs.type() == Value::UnsafeString)
             return lhs.toString() < rhs.toString();
         else
             return false;

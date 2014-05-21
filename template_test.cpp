@@ -475,5 +475,19 @@ BOOST_AUTO_TEST_CASE( templater_escape )
     }
 }
 
+BOOST_AUTO_TEST_CASE( templater_unsafe )
+{
+    TemplateEngine engine;
+
+    {
+        Value values{Value::ObjectTag()};
+        values["string"] = "<b>Hello</b>";
+
+        std::string templ = "<p>@rawHtml(string)</p>";
+        BOOST_CHECK( engine.templ(templ).render(values) == "<p><b>Hello</b></p>" );
+    }
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -34,11 +34,13 @@ public:
         Array =  5,
         Object = 6,
         UserType = 7,
+        UnsafeString = 8,
         Last = 0xFFFFFFFF
     };
 
     struct ObjectTag {};
     struct ArrayTag  {};
+    struct UnsafeStringTag {};
 
     Value();
     Value(Type type);
@@ -54,6 +56,9 @@ public:
 
     Value(const char *s);
     Value(const std::string &s);
+
+    Value(const char *s, const UnsafeStringTag &);
+    Value(const std::string &s, const UnsafeStringTag &);
 
     ~Value();
 

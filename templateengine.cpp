@@ -24,6 +24,7 @@ TemplateEngine::TemplateEngine()
     pimpl.reset(new TemplateEngineImpl);
 
     registerHelper("include", boost::bind(include, boost::ref(*this), _1, _2));
+    registerHelper("rawHtml", rawHtml);
 }
 
 TemplateEngine::~TemplateEngine()
@@ -89,7 +90,7 @@ Value TemplateEngine::callHelper(const std::string &name, const Value &context, 
     }
     else
     {
-        std::cerr << "helper \"" << name << "\" not found";
+        std::cerr << "helper \"" << name << "\" not found" << std::endl;
         return std::string();
     }
 }

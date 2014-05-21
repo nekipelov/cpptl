@@ -803,7 +803,7 @@ static Value nodeEval(const Node *node, const TemplateContext &context)
             member = member->value.variable->member;
         }
 
-        if( value.type() == Value::String )
+        if(value.type() == Value::String)
             value = escapeHtml(value.toString());
 
         return value;
