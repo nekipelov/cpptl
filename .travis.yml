@@ -4,8 +4,7 @@ compiler:
   - clang
 
 before_script:
-  - sudo apt-get install -qq libboost-dev
-  - sudo apt-get install -qq libboost-test-dev 
+  - sudo apt-get install -qq libboost-dev libboost-system-dev libboost-test-dev libboost-filesystem-dev flex bison
   - mkdir build
   - cd build
   - cmake ..

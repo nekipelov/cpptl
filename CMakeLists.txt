@@ -47,7 +47,7 @@ ADD_CUSTOM_COMMAND(
    TARGET hts-test
    OUTPUTS scanner.h scanner.c)
 
- ADD_CUSTOM_COMMAND(
+ADD_CUSTOM_COMMAND(
    SOURCE parser.y
    COMMAND bison
    ARGS --debug --verbose ${CMAKE_CURRENT_SOURCE_DIR}/parser.y -o ${CMAKE_CURRENT_BINARY_DIR}/parser.c
@@ -62,11 +62,11 @@ INCLUDE_DIRECTORIES(
 
 IF(HAS_CXX11_RAW_STRING)
     ADD_EXECUTABLE(cpptl-test template_test.cpp ${SOURCES} ${HEADERS})
-    
-	TARGET_LINK_LIBRARIES(cpptl-test
-		${Boost_SYSTEM_LIBRARY}
-		${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-	)
+
+    TARGET_LINK_LIBRARIES(cpptl-test
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    )
 ENDIF(HAS_CXX11_RAW_STRING)
 
 ADD_EXECUTABLE(value-test value_test.cpp value.cpp value.h)
@@ -77,8 +77,8 @@ TARGET_LINK_LIBRARIES(value-test
 
 ADD_LIBRARY(cpptl ${SOURCES} ${HEADERS})
 TARGET_LINK_LIBRARIES(cpptl
-	${Boost_FILESYSTEM_LIBRARY}
-	${Boost_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
 )
 
 INSTALL(TARGETS cpptl DESTINATION lib)
