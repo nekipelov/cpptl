@@ -83,3 +83,7 @@ TARGET_LINK_LIBRARIES(cpptl
 
 INSTALL(TARGETS cpptl DESTINATION lib)
 INSTALL(FILES value.h template.h templateengine.h DESTINATION include/cpptl)
+
+ENABLE_TESTING()
+ADD_TEST(value value-test)
+ADD_TEST(cpptl cpptl-test)
