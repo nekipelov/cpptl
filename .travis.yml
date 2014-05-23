@@ -8,4 +8,4 @@ before_script:
   - cd build
   - cmake ..
 
-script: make VERBOSE=1 && make VERBOSE=1test 
+script: make && make test 
